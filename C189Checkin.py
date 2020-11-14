@@ -9,6 +9,7 @@ password = ""
 if(username == "" or password == ""):
     username = input("账号：")
     password = input("密码：")
+    msgtxt = ""
 
 def main():
     login(username, password)
@@ -26,8 +27,10 @@ def main():
     netdiskBonus = response.json()['netdiskBonus']
     if(response.json()['isSign'] == "false"):
         print(f"未签到，签到获得{netdiskBonus}M空间")
+        msgtxt = msgtxt + "未签到，签到获得"+netdiskBonus+"M空间 "
     else:
         print(f"已经签到过了，签到获得{netdiskBonus}M空间")
+        msgtxt = msgtxt + "已经签到过了，签到获得"+netdiskBonus+"M空间 "
     headers = {
         'User-Agent':'Mozilla/5.0 (Linux; Android 5.1.1; SM-G930K Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.136 Mobile Safari/537.36 Ecloud/8.6.3 Android/22 clientId/355325117317828 clientModel/SM-G930K imsi/460071114317824 clientChannelId/qq proVersion/1.0.6',
         "Referer" : "https://m.cloud.189.cn/zhuanti/2016/sign/index.jsp?albumBackupOpened=1",
@@ -37,15 +40,20 @@ def main():
     response = s.get(url,headers=headers)
     if ("errorCode" in response.text):
         print(response.text)
+        msgtxt = msgtxt + "出错信息：" + response.text
     else:
         description = response.json()['description']
         print(f"抽奖获得{description}")
+        msgtxt = msgtxt + " 抽奖获得"+description
     response = s.get(url2,headers=headers)
     if ("errorCode" in response.text):
         print(response.text)
+        msgtxt = msgtxt + "出错信息：" + response.text
     else:
         description = response.json()['description']
         print(f"抽奖获得{description}")
+        msgtxt = msgtxt + " 抽奖获得"+description
+    s.get('https://sc.ftqq.com/SCU99054T1f3c28bc1b5111f42e668c71baea10c85ec9e6fc55f85.send?text=' + msgtxt)
 
 BI_RM = list("0123456789abcdefghijklmnopqrstuvwxyz")
 def int2char(a):
